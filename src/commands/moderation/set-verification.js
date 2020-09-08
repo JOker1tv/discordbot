@@ -25,7 +25,7 @@ module.exports = class SetVerificationCommand extends Commando.Command {
                     message.delete({
                         timeout: 1000 * seconds,
                     });
-                });
+                }).catch(err => console.error(err));
             message.delete();
             return;
         }
@@ -76,13 +76,16 @@ module.exports = class SetVerificationCommand extends Commando.Command {
                                 channelId: channel.id,
                                 roleId,
                             },
+                            {}
                         );
+                    } catch (err) {
+                        throw new Error(err);
                     } finally {
                         mongoose.connection.close();
                     }
-                })
+                }).catch(err => console.error(err));
                 await fetch();
-            })
-        })
+            }).catch(err => console.error(err));
+        }).catch(err => console.error(err));
     }
 }
