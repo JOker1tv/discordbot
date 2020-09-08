@@ -76,15 +76,12 @@ module.exports = class SetVerificationCommand extends Commando.Command {
                                 channelId: channel.id,
                                 roleId,
                             },
-                            {
-                                upsert: true,
-                            }
-                        )
+                        );
                     } finally {
-                        // mongoose.connection.close();
+                        mongoose.connection.close();
                     }
                 })
-                //await fetch();
+                await fetch();
             })
         })
     }
