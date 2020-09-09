@@ -13,9 +13,9 @@ Yet another DiscordJS bot using the Commando Framework.
    PREFIX=!
    ```
 2. Run
-```bash
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
 ## Deploy for yourself
 

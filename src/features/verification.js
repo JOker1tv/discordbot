@@ -4,10 +4,8 @@ const verificationSchema = require('@schemas/verification-channels-schema');
 let verificationCache = {};
 
 const fetchData = async (client) => {
-    console.log('FETCHING DATA');
-
-    await mongo().then(async (mongoose) => {
-        try {
+    await mongo()
+        .then(async (mongoose) => {
             const results = await verificationSchema.find({});
             for (const result of results) {
                 const guild = client.guilds.cache.get(result._id);
@@ -19,29 +17,22 @@ const fetchData = async (client) => {
                     }
                 }
             }
-        } catch (err) {
-            throw new Error(err);
-        } finally {
-            mongoose.connection.close();
-        }
-    }).catch(err => console.error(err));
+
+        })
+        .catch(err => console.error(err));
 }
 
 const populateCache = async (client) => {
     verificationCache = {};
-
     await fetchData(client);
-
-    setTimeout(populateCache, 1000 * 60 * 10); // 10m
+    setTimeout(populateCache, 1000 * 60 * 10);
 }
 
 module.exports = (client) => {
     populateCache(client);
-
     client.on('messageReactionAdd', (reaction, user) => {
         const channelId = reaction.message.channel.id;
         const roleId = verificationCache[channelId];
-
         if (roleId) {
             const { guild } = reaction.message;
             const member = guild.members.cache.get(user.id);

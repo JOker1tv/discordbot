@@ -16,7 +16,6 @@ module.exports = class SetVerificationCommand extends Commando.Command {
     }
 
     async run(message, args) {
-        console.log(this);
         const seconds = 3;
 
         if (args.length !== 2) {
@@ -26,7 +25,8 @@ module.exports = class SetVerificationCommand extends Commando.Command {
                     message.delete({
                         timeout: 1000 * seconds,
                     });
-                }).catch(err => console.error(err));
+                })
+                .catch(err => console.error(err));
             message.delete();
             return;
         }
@@ -44,49 +44,56 @@ module.exports = class SetVerificationCommand extends Commando.Command {
         const role = guild.roles.cache.get(roleId);
 
         if (!role) {
-            message.reply('That role does not exist').then((message) => {
-                message.delete({
-                    timeout: 1000 * seconds,
-                });
-            });
+            message.reply('That role does not exist')
+                .then((message) => {
+                    message.delete({
+                        timeout: 1000 * seconds,
+                    });
+                })
+                .catch(err => console.error(err));
             message.delete();
             return;
         }
 
-        message.delete().then(() => {
-            channel.messages.fetch({ limit: 1 }).then(async (results) => {
-                const firstMessage = results.first();
-                if (!firstMessage) {
-                    channel.send('There is no message to react to').then((message) => {
-                        message.delete({
-                            timeout: 1000 * seconds,
-                        });
-                    });
-                    return;
-                }
+        message.delete()
+            .then(() => {
+                channel.messages.fetch({ limit: 1 })
+                    .then(async (results) => {
+                        const firstMessage = results.first();
+                        if (!firstMessage) {
+                            channel.send('There is no message to react to').then((message) => {
+                                message.delete({
+                                    timeout: 1000 * seconds,
+                                });
+                            });
+                            return;
+                        }
 
-                firstMessage.react(emoji);
-                await mongo().then(async (mongoose) => {
-                    try {
-                        await verificationSchema.findOneAndUpdate(
-                            {
-                                _id: guild.id,
-                            },
-                            {
-                                _id: guild.id,
-                                channelId: channel.id,
-                                roleId,
-                            },
-                            {}
-                        );
-                    } catch (err) {
-                        throw new Error(err);
-                    } finally {
-                        mongoose.connection.close();
-                    }
-                }).catch(err => console.error(err));
-                await fetch(this.client);
-            }).catch(err => console.error(err));
-        }).catch(err => console.error(err));
+                        firstMessage.react(emoji);
+                        await mongo()
+                            .then(async (mongoose) => {
+                                try {
+                                    await verificationSchema.findOneAndUpdate(
+                                        {
+                                            _id: guild.id,
+                                        },
+                                        {
+                                            _id: guild.id,
+                                            channelId: channel.id,
+                                            roleId,
+                                        },
+                                        {}
+                                    );
+                                } catch (err) {
+                                    throw new Error(err);
+                                } finally {
+                                    mongoose.connection.close();
+                                }
+                            }).catch(err => console.error(err));
+                        await fetch();
+                    })
+                    .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
     }
 }
