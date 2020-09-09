@@ -16,6 +16,7 @@ module.exports = class SetVerificationCommand extends Commando.Command {
     }
 
     async run(message, args) {
+        console.log(this);
         const seconds = 3;
 
         if (args.length !== 2) {
@@ -84,7 +85,7 @@ module.exports = class SetVerificationCommand extends Commando.Command {
                         mongoose.connection.close();
                     }
                 }).catch(err => console.error(err));
-                await fetch();
+                await fetch(this.client);
             }).catch(err => console.error(err));
         }).catch(err => console.error(err));
     }

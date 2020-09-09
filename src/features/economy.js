@@ -30,6 +30,8 @@ module.exports.addCoins = async (guildId, userId, coins) => {
             coinsCache[`${guildId}-${userId}`] = result.coins;
 
             return result.coins;
+        } catch (err) {
+            throw new Error(err);
         } finally {
             mongoose.connection.close();
         }
@@ -64,6 +66,8 @@ module.exports.getCoins = async (guildId, userId) => {
             coinsCache[`${guildId}-${userId}`] = coins;
 
             return coins
+        } catch (err) {
+            throw new Error(err);
         } finally {
             mongoose.connection.close();
         }

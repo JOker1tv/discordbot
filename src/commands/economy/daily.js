@@ -63,6 +63,8 @@ module.exports = class DailyCommand extends Commando.Command {
 
                 // TODO: Give the rewards
                 message.reply('You have claimed your daily rewards!');
+            } catch (err) {
+                throw new Error(err);
             } finally {
                 mongoose.connection.close();
             }

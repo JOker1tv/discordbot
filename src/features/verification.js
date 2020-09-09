@@ -9,7 +9,6 @@ const fetchData = async (client) => {
     await mongo().then(async (mongoose) => {
         try {
             const results = await verificationSchema.find({});
-
             for (const result of results) {
                 const guild = client.guilds.cache.get(result._id);
                 if (guild) {
